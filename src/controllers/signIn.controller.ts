@@ -25,6 +25,11 @@ export const signIn = async (req: Request, res: Response) => {
     if (Object.keys(errors).length > 0) {
       return res.status(400).send({
         status: "error",
+        code: 400,
+        data: {
+          address,
+          password,
+        },
         message: errors,
       });
     }
@@ -38,6 +43,8 @@ export const signIn = async (req: Request, res: Response) => {
     if (!user) {
       return res.status(404).send({
         status: "error",
+        code: 404,
+        data: { address },
         message: { addressError: "User not found" },
       });
     }
@@ -46,6 +53,8 @@ export const signIn = async (req: Request, res: Response) => {
     if (!isPasswordMatch) {
       return res.status(400).send({
         status: "error",
+        code: 400,
+        data: { password },
         message: { passwordError: "Password is incorrect" },
       });
     }
@@ -65,12 +74,14 @@ export const signIn = async (req: Request, res: Response) => {
 
     res.status(200).json({
       status: "success",
+      code: 200,
       data: { jwt },
       message: "Successfully signed in",
     });
   } catch (error: any) {
     res.status(500).send({
       status: "error",
+      code: 500,
       message: "Internal server error: " + error.message,
     });
   }
