@@ -187,10 +187,10 @@ export const updateDestination = async (
       descriptionError?: string;
       addressError?: string;
       hoursError?: string;
-      pricesError?: string[];
+      pricesError?: string;
       contactError?: string;
-      facilitiesError?: string[];
-      imagesError?: string[];
+      facilitiesError?: string;
+      imagesError?: string;
     } = {};
 
     if (!name) errors.nameError = "Name is required";
@@ -201,14 +201,12 @@ export const updateDestination = async (
     if (!address)
       errors.addressError = "Address is required";
     if (!hours) errors.hoursError = "Hours is required";
-    if (!prices)
-      errors.pricesError = ["Prices are required"];
+    if (!prices) errors.pricesError = "Prices are required";
     if (!contact)
       errors.contactError = "Contact is required";
     if (!facilities)
-      errors.facilitiesError = ["Facilities are required"];
-    if (!images)
-      errors.imagesError = ["Images are required"];
+      errors.facilitiesError = "Facilities are required";
+    if (!images) errors.imagesError = "Images are required";
 
     if (Object.keys(errors).length > 0) {
       return res.status(400).send({
