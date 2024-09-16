@@ -2,9 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import {
   isValidEmail,
   isValidPhone,
-} from "../utils/validation";
+} from "../../utils/validation";
 import { Request, Response } from "express";
-import { sendOtpToEmail } from "../utils/mailer";
+import { sendOtpToEmail } from "../../utils/mailer";
 
 const prisma = new PrismaClient();
 

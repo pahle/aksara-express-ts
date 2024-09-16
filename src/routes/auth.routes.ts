@@ -1,10 +1,10 @@
 import express from "express";
-import { signIn } from "../controllers/signIn.controller";
-import { signUp } from "../controllers/signUp.controller";
+import { signIn } from "../controllers/auth/signIn.controller";
+import { signUp } from "../controllers/auth/signUp.controller";
 import {
   createOtp,
   verifyOtp,
-} from "../controllers/otp.controller";
+} from "../controllers/auth/otp.controller";
 
 const router = express.Router();
 

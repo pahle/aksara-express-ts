@@ -1,11 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { SignJWT } from "jose";
 import {
   isValidEmail,
   isValidPhone,
   isValidPassword,
-} from "../utils/validation";
+} from "../../utils/validation";
 import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
