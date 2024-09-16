@@ -63,22 +63,13 @@ model Destination {
   description String   @db.Text
   address     String
   hours       String
-  price       String[]
+  prices      String[]
   contact     String
   facilities  String[]
-  image       String[]
+  images      String[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-
-// model Image {
-//   id        String   @id @default(uuid())
-//   url       String
-//   wisata    Wisata   @relation(fields: [wisataId], references: [id])
-//   wisataId  String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
-// }
 
 // model Review {
 //   id        String   @id @default(uuid())
