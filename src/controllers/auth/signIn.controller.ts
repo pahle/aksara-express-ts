@@ -1,20 +1,36 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { SignJWT } from "jose";
-import { isValidEmail, isValidPhone, isValidPassword } from '../../utils/validation';
-import { Request, Response } from 'express';
+import {
+  isValidEmail,
+  isValidPhone,
+  isValidPassword,
+} from "../../utils/validation";
+import { Request, Response } from "express";
 
 const prisma = new PrismaClient();
 
-export const signIn = async (req: Request, res: Response) => {
+export const signIn = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { address, password } = req.body;
-    const errors: { addressError?: string; passwordError?: string } = {};
+    const errors: {
+      addressError?: string;
+      passwordError?: string;
+    } = {};
 
-    if (!address) errors.addressError = "Address is required";
-    if (!password) errors.passwordError = "Password is required";
+    if (!address)
+      errors.addressError = "Address is required";
+    if (!password)
+      errors.passwordError = "Password is required";
 
-    if (address && !isValidEmail(address) && !isValidPhone(address)) {
+    if (
+      address &&
+      !isValidEmail(address) &&
+      !isValidPhone(address)
+    ) {
       errors.addressError = "Invalid email or phone format";
     }
 
@@ -49,7 +65,10 @@ export const signIn = async (req: Request, res: Response) => {
       });
     }
 
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    const isPasswordMatch = await bcrypt.compare(
+      password,
+      user.password
+    );
     if (!isPasswordMatch) {
       return res.status(400).send({
         status: "error",
@@ -59,7 +78,9 @@ export const signIn = async (req: Request, res: Response) => {
       });
     }
 
-    const secret = new TextEncoder().encode("your-secret-key");
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET
+    );
     const jwt = await new SignJWT({
       user: {
         id: user.id,
@@ -67,7 +88,7 @@ export const signIn = async (req: Request, res: Response) => {
         phone: user.phone,
       },
     })
-      .setProtectedHeader({ alg: "HS256" })
+      .setProtectedHeader({ alg: process.env.JWT_ALGORITHM || "" })
       .setIssuedAt()
       .setExpirationTime("30m")
       .sign(secret);
@@ -86,5 +107,3 @@ export const signIn = async (req: Request, res: Response) => {
     });
   }
 };
-
-
