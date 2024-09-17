@@ -86,6 +86,11 @@ model Event {
   updatedAt   DateTime @updatedAt
 }
 
+// model Batik {}
+// model Bahasa {
+// 
+// }
+
 // model Review {
 //   id        String   @id @default(uuid())
 //   rating    Int

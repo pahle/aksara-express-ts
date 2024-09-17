@@ -35,11 +35,11 @@ export const getEvents = async (
 
     const events = await prisma.event.findMany();
 
-    if (!events) {
+    if (!events || events.length === 0) {
       return res.status(404).send({
         status: "error",
         code: 404,
-        message: "No events found",
+        message: "No event found",
       });
     }
 

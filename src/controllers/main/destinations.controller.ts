@@ -37,11 +37,11 @@ export const getDestinations = async (
     const destinations =
       await prisma.destination.findMany();
 
-    if (!destinations) {
+    if (!destinations || destinations.length === 0) {
       return res.status(404).send({
         status: "error",
         code: 404,
-        message: "No destinations found",
+        message: "No destination found",
       });
     }
 
