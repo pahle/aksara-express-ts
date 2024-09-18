@@ -12,6 +12,10 @@ app.use(express_1.default.json());
 app.use("/auth", auth_routes_1.default);
 app.use("", main_routes_1.default);
 app.use("", users_routes_1.default);
+// create a / route to test the server
+app.get("/", (res) => {
+    res.json({ message: "Server is up and running" });
+});
 const server = app.listen(3000, () => {
     console.log(`
 🚀 Server ready at: http://localhost:3000
