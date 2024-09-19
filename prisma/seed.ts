@@ -8,7 +8,7 @@ const userData: Prisma.UserCreateInput[] = [
     email: "user@user.com",
     phone: "621234567890",
     password:
-      "$2b$10$bi9U2Fg.H4AkMx4JwBhqk.VrmnraUUaT.sHw0vovDYdZWGsiaMchK",
+      "$2b$10$CIQhjJu7EqgxJDQHw./Z3.PJGvETDKTgjjjExJP56aq2Q19B.OwGK",
     verifiedAt: null,
     profile: {
       create: {

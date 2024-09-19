@@ -228,11 +228,17 @@ export const verifyOtp = async (
       });
     }
 
-    await prisma.otp.delete({
+    await prisma.user.update({
       where: {
-        id: user.otp.id,
+        email: address,
       },
-    });
+      data: {
+        verifiedAt: new Date(),
+        otp: {
+          delete: true,
+        },
+      },
+    })
 
     res.status(200).json({
       status: "success",

@@ -193,9 +193,15 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "OTP expired",
             });
         }
-        yield prisma.otp.delete({
+        yield prisma.user.update({
             where: {
-                id: user.otp.id,
+                email: address,
+            },
+            data: {
+                verifiedAt: new Date(),
+                otp: {
+                    delete: true,
+                },
             },
         });
         res.status(200).json({
