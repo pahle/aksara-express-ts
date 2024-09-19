@@ -74,6 +74,51 @@ const destinationData: Prisma.DestinationCreateInput[] = [
   },
 ];
 
+const eventData: Prisma.EventCreateInput[] = [
+  {
+    name: "Bali Kite Festival",
+    description:
+      "Bali Kite Festival adalah festival layang-layang yang diadakan setiap tahun di Bali. Festival ini diikuti oleh peserta dari berbagai daerah di Bali.",
+    address: "Padang Galak Beach, Sanur, Bali",
+    hours: "08.00 - 17.00",
+    prices: ["Gratis"],
+    contact: "081234567890",
+    images: [
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+    ],
+  },
+  {
+    name: "Bali Arts Festival",
+    description:
+      "Bali Arts Festival adalah festival seni yang diadakan setiap tahun di Bali. Festival ini diikuti oleh seniman dari berbagai daerah di Bali.",
+    address: "Taman Werdhi Budaya, Denpasar, Bali",
+    hours: "08.00 - 17.00",
+    prices: ["Gratis"],
+    contact: "081234567890",
+    images: [
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+    ],
+  },
+  {
+    name: "Bali Food Festival",
+    description:
+      "Bali Food Festival adalah festival makanan yang diadakan setiap tahun di Bali. Festival ini diikuti oleh pedagang makanan dari berbagai daerah di Bali.",
+    address: "Lapangan Puputan Badung, Denpasar, Bali",
+    hours: "08.00 - 17.00",
+    prices: ["Gratis"],
+    contact: "081234567890",
+    images: [
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+      "https://picsum.photos/500",
+    ],
+  },
+];
+
 async function main() {
   console.log(`Start seeding ...`);
   for (const u of userData) {
@@ -89,6 +134,12 @@ async function main() {
     console.log(
       `Created destination with id: ${destination.id}`
     );
+  }
+  for (const e of eventData) {
+    const event = await prisma.event.create({
+      data: e,
+    });
+    console.log(`Created event with id: ${event.id}`);
   }
   console.log(`Seeding finished.`);
 }
