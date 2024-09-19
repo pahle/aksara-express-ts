@@ -125,6 +125,20 @@ export const createDestination = async (
       });
     }
 
+    const destination = await prisma.destination.findFirst({
+      where: {
+        name,
+      },
+    });
+
+    if (destination) {
+      return res.status(409).send({
+        status: "error",
+        code: 409,
+        message: "Destination already exists",
+      });
+    }
+
     const newDestination = await prisma.destination.create({
       data: {
         name,
@@ -172,15 +186,8 @@ export const updateDestination = async (
       images,
     } = req.body;
 
-    if (!id) {
-      return res.status(400).send({
-        status: "error",
-        code: 400,
-        message: "Destination ID is required",
-      });
-    }
-
     const errors: {
+      idError?: string;
       nameError?: string;
       locationError?: string;
       descriptionError?: string;
@@ -192,6 +199,9 @@ export const updateDestination = async (
       imagesError?: string;
     } = {};
 
+    if (!id) {
+      errors.idError = "ID is required";
+    }
     if (!name) errors.nameError = "Name is required";
     if (!location)
       errors.locationError = "Location is required";
@@ -212,6 +222,7 @@ export const updateDestination = async (
         status: "error",
         code: 400,
         data: {
+          id,
           name,
           location,
           description,

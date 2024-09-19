@@ -38,7 +38,9 @@ const createOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: errors,
             });
         }
-        const sentTo = (0, validation_1.isValidEmail)(address) ? "email" : "phone";
+        const sentTo = (0, validation_1.isValidEmail)(address)
+            ? "email"
+            : "phone";
         if (sentTo === "email") {
             const user = yield prisma.user.findFirst({
                 where: {
@@ -95,6 +97,17 @@ const createOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 code: 200,
                 data: { email: updatedUser.email },
                 message: "OTP sent to email",
+            });
+        }
+        if (sentTo === "phone") {
+            // not supported
+            res.status(400).send({
+                status: "error",
+                code: 400,
+                data: {
+                    address,
+                },
+                message: "Phone number not supported",
             });
         }
     }

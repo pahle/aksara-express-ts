@@ -94,7 +94,19 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 message: errors,
             });
         }
-        const event = yield prisma.event.create({
+        const event = yield prisma.event.findFirst({
+            where: {
+                name: name,
+            },
+        });
+        if (event) {
+            return res.status(409).send({
+                status: "error",
+                code: 409,
+                message: "Event already exists",
+            });
+        }
+        const newEvent = yield prisma.event.create({
             data: {
                 name,
                 description,
@@ -108,7 +120,7 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(201).send({
             status: "success",
             code: 201,
-            data: { event },
+            data: { newEvent },
             message: "Event created",
         });
     }
@@ -124,14 +136,9 @@ exports.createEvent = createEvent;
 const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, name, description, address, hours, prices, contact, images, } = req.body;
-        if (!id) {
-            return res.status(400).send({
-                status: "error",
-                code: 400,
-                message: "Event ID is required",
-            });
-        }
         const errors = {};
+        if (!id)
+            errors.id = "ID is required";
         if (!name)
             errors.name = "Name is required";
         if (!description)
@@ -151,6 +158,7 @@ const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 status: "error",
                 code: 400,
                 data: {
+                    id,
                     name,
                     description,
                     address,
@@ -191,7 +199,7 @@ const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         res.status(200).send({
             status: "success",
             code: 200,
-            data: { event },
+            data: { updatedEvent },
             message: "Event updated",
         });
     }

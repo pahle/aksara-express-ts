@@ -100,6 +100,18 @@ const createDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 message: errors,
             });
         }
+        const destination = yield prisma.destination.findFirst({
+            where: {
+                name,
+            },
+        });
+        if (destination) {
+            return res.status(409).send({
+                status: "error",
+                code: 409,
+                message: "Destination already exists",
+            });
+        }
         const newDestination = yield prisma.destination.create({
             data: {
                 name,
@@ -132,14 +144,10 @@ exports.createDestination = createDestination;
 const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id, name, location, description, address, hours, prices, contact, facilities, images, } = req.body;
-        if (!id) {
-            return res.status(400).send({
-                status: "error",
-                code: 400,
-                message: "Destination ID is required",
-            });
-        }
         const errors = {};
+        if (!id) {
+            errors.idError = "ID is required";
+        }
         if (!name)
             errors.nameError = "Name is required";
         if (!location)
@@ -163,6 +171,7 @@ const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
                 status: "error",
                 code: 400,
                 data: {
+                    id,
                     name,
                     location,
                     description,

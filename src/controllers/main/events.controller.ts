@@ -109,7 +109,21 @@ export const createEvent = async (
       });
     }
 
-    const event = await prisma.event.create({
+    const event = await prisma.event.findFirst({
+      where: {
+        name: name,
+      },
+    });
+
+    if (event) {
+      return res.status(409).send({
+        status: "error",
+        code: 409,
+        message: "Event already exists",
+      });
+    }
+
+    const newEvent = await prisma.event.create({
       data: {
         name,
         description,
@@ -124,7 +138,7 @@ export const createEvent = async (
     res.status(201).send({
       status: "success",
       code: 201,
-      data: { event },
+      data: { newEvent },
       message: "Event created",
     });
   } catch (error: any) {
@@ -152,15 +166,8 @@ export const updateEvent = async (
       images,
     } = req.body;
 
-    if (!id) {
-      return res.status(400).send({
-        status: "error",
-        code: 400,
-        message: "Event ID is required",
-      });
-    }
-
     const errors: {
+      id?: string;
       name?: string;
       description?: string;
       address?: string;
@@ -170,6 +177,7 @@ export const updateEvent = async (
       images?: string;
     } = {};
 
+    if (!id) errors.id = "ID is required";
     if (!name) errors.name = "Name is required";
     if (!description)
       errors.description = "Description is required";
@@ -184,6 +192,7 @@ export const updateEvent = async (
         status: "error",
         code: 400,
         data: {
+          id,
           name,
           description,
           address,
@@ -228,7 +237,7 @@ export const updateEvent = async (
     res.status(200).send({
       status: "success",
       code: 200,
-      data: { event },
+      data: { updatedEvent },
       message: "Event updated",
     });
   } catch (error: any) {

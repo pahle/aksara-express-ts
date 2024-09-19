@@ -45,7 +45,9 @@ export const createOtp = async (
       });
     }
 
-    const sentTo = isValidEmail(address) ? "email" : "phone";
+    const sentTo = isValidEmail(address)
+      ? "email"
+      : "phone";
 
     if (sentTo === "email") {
       const user = await prisma.user.findFirst({
@@ -113,6 +115,18 @@ export const createOtp = async (
         code: 200,
         data: { email: updatedUser.email },
         message: "OTP sent to email",
+      });
+    }
+
+    if (sentTo === "phone") {
+      // not supported
+      res.status(400).send({
+        status: "error",
+        code: 400,
+        data: {
+          address,
+        },
+        message: "Phone number not supported",
       });
     }
   } catch (error: any) {
