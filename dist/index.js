@@ -12,7 +12,7 @@ app.use(express_1.default.json());
 app.use("/auth", auth_routes_1.default);
 app.use(main_routes_1.default);
 app.use(users_routes_1.default);
-app.get("/", (res) => {
+app.get("/", (req, res) => {
     res.json({ message: "Server is up and running" });
 });
 const server = app.listen(3000, () => {

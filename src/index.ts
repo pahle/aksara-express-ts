@@ -2,7 +2,7 @@ import express from "express";
 import authRoutes from "./routes/auth.routes";
 import mainRoutes from "./routes/main.routes";
 import usersRoutes from "./routes/users.routes";
-import { Response } from "express";
+import { Request, Response } from "express";
 
 const app = express();
 app.use(express.json());
@@ -11,7 +11,7 @@ app.use("/auth", authRoutes);
 app.use(mainRoutes);
 app.use(usersRoutes);
 
-app.get("/", (res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.json({ message: "Server is up and running" });
 });
 
