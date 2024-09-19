@@ -78,6 +78,15 @@ export const signIn = async (
       });
     }
 
+    if(user.verifiedAt === null) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        data: { address },
+        message: { addressError: "User not verified" },
+      });
+    }
+
     const secret = new TextEncoder().encode(
       process.env.JWT_SECRET
     );

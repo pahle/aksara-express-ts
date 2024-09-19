@@ -67,6 +67,14 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: { passwordError: "Password is incorrect" },
             });
         }
+        if (user.verifiedAt === null) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                data: { address },
+                message: { addressError: "User not verified" },
+            });
+        }
         const secret = new TextEncoder().encode(process.env.JWT_SECRET);
         const jwt = yield new jose_1.SignJWT({
             user: {
