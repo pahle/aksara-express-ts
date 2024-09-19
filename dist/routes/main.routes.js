@@ -12,8 +12,8 @@ router.post("/destinations", destinations_controller_1.createDestination);
 router.patch("/destinations", destinations_controller_1.updateDestination);
 router.delete("/destinations", destinations_controller_1.deleteDestination);
 router.get("/events", events_controller_1.getEvents);
-router.post("/events", destinations_controller_1.createDestination);
-router.patch("/events", destinations_controller_1.updateDestination);
-router.delete("/events", destinations_controller_1.deleteDestination);
+router.post("/events", events_controller_1.createEvent);
+router.patch("/events", events_controller_1.updateEvent);
+router.delete("/events", events_controller_1.deleteEvent);
 exports.default = router;
 //# sourceMappingURL=main.routes.js.map
