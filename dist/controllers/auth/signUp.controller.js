@@ -60,6 +60,22 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        let random = Math.floor(Math.random() * 1000);
+        let username = email.split("@")[0] + random;
+        let checkUsername = yield prisma.profile.findFirst({
+            where: {
+                username: username,
+            },
+        });
+        while (checkUsername) {
+            random = Math.floor(Math.random() * 1000);
+            username = email.split("@")[0] + random;
+            checkUsername = yield prisma.profile.findFirst({
+                where: {
+                    username: username,
+                },
+            });
+        }
         const newUser = yield prisma.user.create({
             data: {
                 email,
@@ -68,7 +84,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 profile: {
                     create: {
                         name: email.split("@")[0],
-                        username: email.split("@")[0],
+                        username: email.split("@")[0] + random,
                         bio: "Halo, saya baru disini!",
                     },
                 },

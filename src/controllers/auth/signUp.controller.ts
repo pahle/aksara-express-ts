@@ -65,6 +65,26 @@ export const signUp = async (
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    let random = Math.floor(Math.random() * 1000);
+    let username = email.split("@")[0] + random;
+
+    let checkUsername = await prisma.profile.findFirst({
+      where: {
+        username: username,
+      },
+    });
+
+    while (checkUsername) {
+      random = Math.floor(Math.random() * 1000);
+      username = email.split("@")[0] + random;
+
+      checkUsername = await prisma.profile.findFirst({
+        where: {
+          username: username,
+        },
+      });
+    }
+
     const newUser = await prisma.user.create({
       data: {
         email,
@@ -73,7 +93,7 @@ export const signUp = async (
         profile: {
           create: {
             name: email.split("@")[0],
-            username: email.split("@")[0],
+            username: email.split("@")[0] + random,
             bio: "Halo, saya baru disini!",
           },
         },
