@@ -8,10 +8,8 @@ const app = express();
 app.use(express.json());
 
 app.use("/auth", authRoutes);
-app.use("", mainRoutes);
-app.use("", usersRoutes);
-
-// create a / route to test the server
+app.use(mainRoutes);
+app.use(usersRoutes);
 
 app.get("/", (res: Response) => {
   res.json({ message: "Server is up and running" });

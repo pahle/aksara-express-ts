@@ -130,17 +130,15 @@ const createDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createDestination = createDestination;
 const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const destinationId = (_a = req.query.id) === null || _a === void 0 ? void 0 : _a.toString();
-        if (!destinationId) {
+        const { id, name, location, description, address, hours, prices, contact, facilities, images, } = req.body;
+        if (!id) {
             return res.status(400).send({
                 status: "error",
                 code: 400,
                 message: "Destination ID is required",
             });
         }
-        const { name, location, description, address, hours, prices, contact, facilities, images, } = req.body;
         const errors = {};
         if (!name)
             errors.nameError = "Name is required";
@@ -180,7 +178,7 @@ const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const destination = yield prisma.destination.findUnique({
             where: {
-                id: destinationId,
+                id: id,
             },
         });
         if (!destination) {
@@ -192,7 +190,7 @@ const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const updatedDestination = yield prisma.destination.update({
             where: {
-                id: destinationId,
+                id: id,
             },
             data: {
                 name,
@@ -223,10 +221,9 @@ const updateDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.updateDestination = updateDestination;
 const deleteDestination = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const destinationId = (_a = req.query.id) === null || _a === void 0 ? void 0 : _a.toString();
-        if (!destinationId) {
+        const { id } = req.body;
+        if (!id) {
             return res.status(400).send({
                 status: "error",
                 code: 400,
@@ -235,7 +232,7 @@ const deleteDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         const destination = yield prisma.destination.findUnique({
             where: {
-                id: destinationId,
+                id: id,
             },
         });
         if (!destination) {
@@ -247,7 +244,7 @@ const deleteDestination = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         yield prisma.destination.delete({
             where: {
-                id: destinationId,
+                id: id,
             },
         });
         res.status(200).json({

@@ -10,9 +10,8 @@ const users_routes_1 = __importDefault(require("./routes/users.routes"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use("/auth", auth_routes_1.default);
-app.use("", main_routes_1.default);
-app.use("", users_routes_1.default);
-// create a / route to test the server
+app.use(main_routes_1.default);
+app.use(users_routes_1.default);
 app.get("/", (res) => {
     res.json({ message: "Server is up and running" });
 });

@@ -123,8 +123,14 @@ const createEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.createEvent = createEvent;
 const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const eventId = req.params.id;
-        const { name, description, address, hours, prices, contact, images, } = req.body;
+        const { id, name, description, address, hours, prices, contact, images, } = req.body;
+        if (!id) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                message: "Event ID is required",
+            });
+        }
         const errors = {};
         if (!name)
             errors.name = "Name is required";
@@ -156,9 +162,21 @@ const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 message: errors,
             });
         }
-        const event = yield prisma.event.update({
+        const event = yield prisma.event.findUnique({
             where: {
-                id: eventId,
+                id: id,
+            },
+        });
+        if (!event) {
+            return res.status(404).send({
+                status: "error",
+                code: 404,
+                message: "Event not found",
+            });
+        }
+        const updatedEvent = yield prisma.event.update({
+            where: {
+                id: id,
             },
             data: {
                 name,
@@ -188,16 +206,34 @@ const updateEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.updateEvent = updateEvent;
 const deleteEvent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const eventId = req.params.id;
-        const event = yield prisma.event.delete({
+        const { id } = req.body;
+        if (!id) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                message: "Event ID is required",
+            });
+        }
+        const event = yield prisma.event.findUnique({
             where: {
-                id: eventId,
+                id: id,
             },
         });
-        res.status(200).send({
+        if (!event) {
+            return res.status(404).send({
+                status: "error",
+                code: 404,
+                message: "Event not found",
+            });
+        }
+        yield prisma.event.delete({
+            where: {
+                id: id,
+            },
+        });
+        res.status(200).json({
             status: "success",
             code: 200,
-            data: { event },
             message: "Event deleted",
         });
     }

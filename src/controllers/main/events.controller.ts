@@ -141,8 +141,8 @@ export const updateEvent = async (
   res: Response
 ) => {
   try {
-    const eventId = req.params.id;
     const {
+      id,
       name,
       description,
       address,
@@ -151,6 +151,14 @@ export const updateEvent = async (
       contact,
       images,
     } = req.body;
+
+    if (!id) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        message: "Event ID is required",
+      });
+    }
 
     const errors: {
       name?: string;
@@ -188,9 +196,23 @@ export const updateEvent = async (
       });
     }
 
-    const event = await prisma.event.update({
+    const event = await prisma.event.findUnique({
       where: {
-        id: eventId,
+        id: id,
+      },
+    });
+
+    if (!event) {
+      return res.status(404).send({
+        status: "error",
+        code: 404,
+        message: "Event not found",
+      });
+    }
+
+    const updatedEvent = await prisma.event.update({
+      where: {
+        id: id,
       },
       data: {
         name,
@@ -223,18 +245,39 @@ export const deleteEvent = async (
   res: Response
 ) => {
   try {
-    const eventId = req.params.id;
+    const { id } = req.body;
 
-    const event = await prisma.event.delete({
+    if (!id) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        message: "Event ID is required",
+      });
+    }
+
+    const event = await prisma.event.findUnique({
       where: {
-        id: eventId,
+        id: id,
       },
     });
 
-    res.status(200).send({
+    if (!event) {
+      return res.status(404).send({
+        status: "error",
+        code: 404,
+        message: "Event not found",
+      });
+    }
+
+    await prisma.event.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    res.status(200).json({
       status: "success",
       code: 200,
-      data: { event },
       message: "Event deleted",
     });
   } catch (error: any) {

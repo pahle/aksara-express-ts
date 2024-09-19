@@ -159,17 +159,8 @@ export const updateDestination = async (
   res: Response
 ) => {
   try {
-    const destinationId = req.query.id?.toString();
-
-    if (!destinationId) {
-      return res.status(400).send({
-        status: "error",
-        code: 400,
-        message: "Destination ID is required",
-      });
-    }
-
     const {
+      id,
       name,
       location,
       description,
@@ -180,6 +171,14 @@ export const updateDestination = async (
       facilities,
       images,
     } = req.body;
+
+    if (!id) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        message: "Destination ID is required",
+      });
+    }
 
     const errors: {
       nameError?: string;
@@ -230,7 +229,7 @@ export const updateDestination = async (
     const destination = await prisma.destination.findUnique(
       {
         where: {
-          id: destinationId,
+          id: id,
         },
       }
     );
@@ -246,7 +245,7 @@ export const updateDestination = async (
     const updatedDestination =
       await prisma.destination.update({
         where: {
-          id: destinationId,
+          id: id,
         },
         data: {
           name,
@@ -281,9 +280,9 @@ export const deleteDestination = async (
   res: Response
 ) => {
   try {
-    const destinationId = req.query.id?.toString();
+    const { id } = req.body;
 
-    if (!destinationId) {
+    if (!id) {
       return res.status(400).send({
         status: "error",
         code: 400,
@@ -294,7 +293,7 @@ export const deleteDestination = async (
     const destination = await prisma.destination.findUnique(
       {
         where: {
-          id: destinationId,
+          id: id,
         },
       }
     );
@@ -309,7 +308,7 @@ export const deleteDestination = async (
 
     await prisma.destination.delete({
       where: {
-        id: destinationId,
+        id: id,
       },
     });
 
