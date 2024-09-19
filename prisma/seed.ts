@@ -120,6 +120,12 @@ const eventData: Prisma.EventCreateInput[] = [
 ];
 
 async function main() {
+  console.log(`Clearing existing data...`);
+
+  // Delete all records from the tables
+  await prisma.user.deleteMany();
+  await prisma.destination.deleteMany();
+  await prisma.event.deleteMany();
   console.log(`Start seeding ...`);
   for (const u of userData) {
     const user = await prisma.user.create({
