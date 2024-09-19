@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 const userData: Prisma.UserCreateInput[] = [
   {
+    id: "b6c711b0-3cdb-49cc-bc4f-b22205bc857d",
     email: "user@user.com",
     phone: "621234567890",
     password:
@@ -22,6 +23,7 @@ const userData: Prisma.UserCreateInput[] = [
 
 const destinationData: Prisma.DestinationCreateInput[] = [
   {
+    id: "1b28ace8-e752-489f-9612-a12efc84b7f0",
     name: "Pantai Kuta",
     location: "Kuta, Bali",
     description:
@@ -39,6 +41,7 @@ const destinationData: Prisma.DestinationCreateInput[] = [
     ],
   },
   {
+    id: "ea595f34-8a38-40db-adc7-74664b2b6d42",
     name: "Pantai Sanur",
     location: "Sanur, Bali",
     description:
@@ -56,6 +59,7 @@ const destinationData: Prisma.DestinationCreateInput[] = [
     ],
   },
   {
+    id: "94e1eebe-9bf9-4f5e-9142-703fbfc9a13c",
     name: "Pantai Lovina",
     location: "Lovina, Bali",
     description:
@@ -76,6 +80,7 @@ const destinationData: Prisma.DestinationCreateInput[] = [
 
 const eventData: Prisma.EventCreateInput[] = [
   {
+    id: "486b486e-26db-49a9-9fed-8aabb8e45272",
     name: "Bali Kite Festival",
     description:
       "Bali Kite Festival adalah festival layang-layang yang diadakan setiap tahun di Bali. Festival ini diikuti oleh peserta dari berbagai daerah di Bali.",
@@ -90,6 +95,7 @@ const eventData: Prisma.EventCreateInput[] = [
     ],
   },
   {
+    id: "ee89e63c-f782-4d84-8def-2f2a09ed5940",
     name: "Bali Arts Festival",
     description:
       "Bali Arts Festival adalah festival seni yang diadakan setiap tahun di Bali. Festival ini diikuti oleh seniman dari berbagai daerah di Bali.",
@@ -104,6 +110,7 @@ const eventData: Prisma.EventCreateInput[] = [
     ],
   },
   {
+    id: "8176abd4-a082-426b-ae47-0480f160fda4",
     name: "Bali Food Festival",
     description:
       "Bali Food Festival adalah festival makanan yang diadakan setiap tahun di Bali. Festival ini diikuti oleh pedagang makanan dari berbagai daerah di Bali.",
