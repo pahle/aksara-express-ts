@@ -201,7 +201,9 @@ export const verifyOtp = async (
         data: {
           address,
         },
-        message: "OTP not found",
+        message: {
+          codeError: "OTP not found",
+        }
       });
     }
 
@@ -213,7 +215,9 @@ export const verifyOtp = async (
           address,
           code,
         },
-        message: "Invalid OTP",
+        message: {
+          codeError: "Invalid OTP",
+        }
       });
     }
 
@@ -224,7 +228,9 @@ export const verifyOtp = async (
         data: {
           address,
         },
-        message: "OTP expired",
+        message: {
+          codeError: "OTP expired",
+        },
       });
     }
 

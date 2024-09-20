@@ -169,7 +169,9 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: {
                     address,
                 },
-                message: "OTP not found",
+                message: {
+                    codeError: "OTP not found",
+                }
             });
         }
         if (user.otp.code !== code) {
@@ -180,7 +182,9 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                     address,
                     code,
                 },
-                message: "Invalid OTP",
+                message: {
+                    codeError: "Invalid OTP",
+                }
             });
         }
         if (user.otp.validUntil < new Date()) {
@@ -190,7 +194,9 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 data: {
                     address,
                 },
-                message: "OTP expired",
+                message: {
+                    codeError: "OTP expired",
+                },
             });
         }
         yield prisma.user.update({
