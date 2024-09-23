@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyOtp = exports.createOtp = void 0;
 const client_1 = require("@prisma/client");
+const jose_1 = require("jose");
 const validation_1 = require("../../utils/validation");
 const mailer_1 = require("../../utils/mailer");
 const prisma = new client_1.PrismaClient();
@@ -58,6 +59,26 @@ const createOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                         address,
                     },
                     message: { addressError: "User not found" },
+                });
+            }
+            if (!user.verifiedAt && createdFor === "login") {
+                return res.status(400).send({
+                    status: "error",
+                    code: 400,
+                    data: {
+                        address,
+                    },
+                    message: "User not verified",
+                });
+            }
+            if (user.verifiedAt && createdFor === "register") {
+                return res.status(400).send({
+                    status: "error",
+                    code: 400,
+                    data: {
+                        address,
+                    },
+                    message: "User already verified",
                 });
             }
             if (user.otp) {
@@ -171,7 +192,7 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 message: {
                     codeError: "OTP not found",
-                }
+                },
             });
         }
         if (user.otp.code !== code) {
@@ -184,7 +205,7 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 message: {
                     codeError: "Invalid OTP",
-                }
+                },
             });
         }
         if (user.otp.validUntil < new Date()) {
@@ -199,23 +220,52 @@ const verifyOtp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             });
         }
-        yield prisma.user.update({
-            where: {
-                email: address,
-            },
-            data: {
-                verifiedAt: new Date(),
-                otp: {
-                    delete: true,
+        if (user.otp.createdFor === "login") {
+            const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+            const jwt = yield new jose_1.SignJWT({
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    phone: user.phone,
                 },
-            },
-        });
-        res.status(200).json({
-            status: "success",
-            code: 200,
-            data: { email: user.email },
-            message: "OTP verified",
-        });
+            })
+                .setProtectedHeader({
+                alg: process.env.JWT_ALGORITHM || "",
+            })
+                .setIssuedAt()
+                .setExpirationTime("30m")
+                .sign(secret);
+            yield prisma.otp.delete({
+                where: {
+                    id: user.otp.id,
+                },
+            });
+            res.status(200).json({
+                status: "success",
+                code: 200,
+                data: { jwt },
+                message: "Successfully signed in",
+            });
+        }
+        if (user.otp.createdFor === "register") {
+            yield prisma.user.update({
+                where: {
+                    email: address,
+                },
+                data: {
+                    verifiedAt: new Date(),
+                    otp: {
+                        delete: true,
+                    },
+                },
+            });
+            res.status(200).json({
+                status: "success",
+                code: 200,
+                data: { email: user.email },
+                message: "OTP verified",
+            });
+        }
     }
     catch (error) {
         res.status(500).send({

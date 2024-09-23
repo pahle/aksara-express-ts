@@ -53,13 +53,23 @@ export const signUp = async (
       },
     });
 
-    if (existingUser) {
+    if (email === existingUser?.email) {
       return res.status(400).send({
         status: "error",
         code: 400,
-        data: { email, phone },
+        data: { email },
         message:
-          "User already exists with this email or phone",
+          "User already exists with this email",
+      });
+    }
+
+    if (phone === existingUser?.phone) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        data: { phone },
+        message:
+          "User already exists with this phone number",
       });
     }
 

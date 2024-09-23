@@ -51,12 +51,20 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 OR: [{ email }, { phone }],
             },
         });
-        if (existingUser) {
+        if (email === (existingUser === null || existingUser === void 0 ? void 0 : existingUser.email)) {
             return res.status(400).send({
                 status: "error",
                 code: 400,
-                data: { email, phone },
-                message: "User already exists with this email or phone",
+                data: { email },
+                message: "User already exists with this email",
+            });
+        }
+        if (phone === (existingUser === null || existingUser === void 0 ? void 0 : existingUser.phone)) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                data: { phone },
+                message: "User already exists with this phone number",
             });
         }
         const hashedPassword = yield bcrypt_1.default.hash(password, 10);

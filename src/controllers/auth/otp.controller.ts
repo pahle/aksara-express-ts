@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { SignJWT } from "jose";
 import {
   isValidEmail,
   isValidPhone,
@@ -70,6 +71,28 @@ export const createOtp = async (
         });
       }
 
+      if (!user.verifiedAt && createdFor === "login") {
+        return res.status(400).send({
+          status: "error",
+          code: 400,
+          data: {
+            address,
+          },
+          message: "User not verified",
+        });
+      }
+
+      if (user.verifiedAt && createdFor === "register") {
+        return res.status(400).send({
+          status: "error",
+          code: 400,
+          data: {
+            address,
+          },
+          message: "User already verified",
+        });
+      }
+
       if (user.otp) {
         if (user.otp.validUntil > new Date()) {
           return res.status(400).send({
@@ -81,6 +104,7 @@ export const createOtp = async (
             message: "OTP already exists",
           });
         }
+
         await prisma.otp.delete({
           where: {
             id: user.otp.id,
@@ -203,7 +227,7 @@ export const verifyOtp = async (
         },
         message: {
           codeError: "OTP not found",
-        }
+        },
       });
     }
 
@@ -217,7 +241,7 @@ export const verifyOtp = async (
         },
         message: {
           codeError: "Invalid OTP",
-        }
+        },
       });
     }
 
@@ -234,24 +258,57 @@ export const verifyOtp = async (
       });
     }
 
-    await prisma.user.update({
-      where: {
-        email: address,
-      },
-      data: {
-        verifiedAt: new Date(),
-        otp: {
-          delete: true,
+    if (user.otp.createdFor === "login") {
+      const secret = new TextEncoder().encode(
+        process.env.JWT_SECRET
+      );
+      const jwt = await new SignJWT({
+        user: {
+          id: user.id,
+          email: user.email,
+          phone: user.phone,
         },
-      },
-    })
+      })
+        .setProtectedHeader({
+          alg: process.env.JWT_ALGORITHM || "",
+        })
+        .setIssuedAt()
+        .setExpirationTime("30m")
+        .sign(secret);
 
-    res.status(200).json({
-      status: "success",
-      code: 200,
-      data: { email: user.email },
-      message: "OTP verified",
-    });
+      await prisma.otp.delete({
+        where: {
+          id: user.otp.id,
+        },
+      });
+
+      res.status(200).json({
+        status: "success",
+        code: 200,
+        data: { jwt },
+        message: "Successfully signed in",
+      });
+    }
+
+    if (user.otp.createdFor === "register") {
+      await prisma.user.update({
+        where: {
+          email: address,
+        },
+        data: {
+          verifiedAt: new Date(),
+          otp: {
+            delete: true,
+          },
+        },
+      });
+      res.status(200).json({
+        status: "success",
+        code: 200,
+        data: { email: user.email },
+        message: "OTP verified",
+      });
+    }
   } catch (error: any) {
     res.status(500).send({
       status: "error",

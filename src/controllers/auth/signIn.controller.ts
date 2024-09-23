@@ -79,9 +79,9 @@ export const signIn = async (
     }
 
     if(user.verifiedAt === null) {
-      return res.status(400).send({
+      return res.status(401).send({
         status: "error",
-        code: 400,
+        code: 401,
         data: { address },
         message: { addressError: "User not verified" },
       });
