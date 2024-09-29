@@ -36,7 +36,11 @@ const getDestinations = (req, res) => __awaiter(void 0, void 0, void 0, function
                 message: "Destination found",
             });
         }
-        const destinations = yield prisma.destination.findMany();
+        const destinations = yield prisma.destination.findMany({
+            include: {
+                reviews: true,
+            }
+        });
         if (!destinations || destinations.length === 0) {
             return res.status(404).send({
                 status: "error",

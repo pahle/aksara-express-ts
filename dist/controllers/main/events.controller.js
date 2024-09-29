@@ -36,7 +36,11 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: "Event found",
             });
         }
-        const events = yield prisma.event.findMany();
+        const events = yield prisma.event.findMany({
+            include: {
+                reviews: true,
+            }
+        });
         if (!events || events.length === 0) {
             return res.status(404).send({
                 status: "error",

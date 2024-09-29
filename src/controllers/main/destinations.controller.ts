@@ -35,7 +35,11 @@ export const getDestinations = async (
     }
 
     const destinations =
-      await prisma.destination.findMany();
+      await prisma.destination.findMany({
+        include: {
+          reviews: true,
+        }
+      });
 
     if (!destinations || destinations.length === 0) {
       return res.status(404).send({

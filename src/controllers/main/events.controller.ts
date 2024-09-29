@@ -33,7 +33,11 @@ export const getEvents = async (
       });
     }
 
-    const events = await prisma.event.findMany();
+    const events = await prisma.event.findMany({
+      include: {
+        reviews: true,
+      }
+    });
 
     if (!events || events.length === 0) {
       return res.status(404).send({
