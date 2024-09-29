@@ -84,6 +84,30 @@ export const updateUser = async (
     if (password && !isValidPassword(password))
       errors.passwordError = "Invalid password format";
 
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { phone }],
+      },
+    });
+
+    if (email === existingUser?.email) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        data: { email },
+        message: "User already exists with this email",
+      });
+    }
+
+    if (phone === existingUser?.phone) {
+      return res.status(400).send({
+        status: "error",
+        code: 400,
+        data: { phone },
+        message: "User already exists with this phone",
+      });
+    }
+
     if (Object.keys(errors).length > 0) {
       return res.status(400).send({
         status: "error",

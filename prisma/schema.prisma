@@ -34,7 +34,7 @@ model User {
 
 model Profile {
   id        String   @id @default(uuid())
-  username  String  @unique
+  username  String   @unique
   name      String
   image     String?
   bio       String?  @db.Text

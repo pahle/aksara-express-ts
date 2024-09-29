@@ -73,6 +73,27 @@ const updateUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             errors.phoneError = "Invalid phone format";
         if (password && !(0, validation_1.isValidPassword)(password))
             errors.passwordError = "Invalid password format";
+        const existingUser = yield prisma.user.findFirst({
+            where: {
+                OR: [{ email }, { phone }],
+            },
+        });
+        if (email === (existingUser === null || existingUser === void 0 ? void 0 : existingUser.email)) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                data: { email },
+                message: "User already exists with this email",
+            });
+        }
+        if (phone === (existingUser === null || existingUser === void 0 ? void 0 : existingUser.phone)) {
+            return res.status(400).send({
+                status: "error",
+                code: 400,
+                data: { phone },
+                message: "User already exists with this phone",
+            });
+        }
         if (Object.keys(errors).length > 0) {
             return res.status(400).send({
                 status: "error",
