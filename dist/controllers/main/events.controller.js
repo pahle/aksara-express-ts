@@ -21,6 +21,9 @@ const getEvents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 where: {
                     id: eventId,
                 },
+                include: {
+                    reviews: true,
+                }
             });
             if (!event) {
                 return res.status(404).send({

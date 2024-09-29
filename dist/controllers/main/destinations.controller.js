@@ -21,6 +21,9 @@ const getDestinations = (req, res) => __awaiter(void 0, void 0, void 0, function
                 where: {
                     id: destinationId,
                 },
+                include: {
+                    reviews: true,
+                }
             });
             if (!destination) {
                 return res.status(404).send({

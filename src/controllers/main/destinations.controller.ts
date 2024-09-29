@@ -16,6 +16,9 @@ export const getDestinations = async (
           where: {
             id: destinationId,
           },
+          include: {
+            reviews: true,
+          }
         });
 
       if (!destination) {

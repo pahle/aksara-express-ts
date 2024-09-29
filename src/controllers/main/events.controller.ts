@@ -15,6 +15,9 @@ export const getEvents = async (
         where: {
           id: eventId,
         },
+        include: {
+          reviews: true,
+        }
       });
 
       if (!event) {
